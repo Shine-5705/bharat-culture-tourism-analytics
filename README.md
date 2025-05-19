@@ -1,10 +1,8 @@
-# bharat-culture-tourism-analytics
-
 # India Art, Culture & Tourism Dashboard 🏮
 
 An interactive Streamlit dashboard showcasing India's rich cultural heritage, traditional art forms, and tourism landscape. This data-driven platform helps promote responsible tourism while preserving cultural treasures across India.
 
-![Dashboard Preview](https://images.pexels.com/photos/2387871/pexels-photo-2387871.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2)
+![Dashboard Preview](C:\Users\gupta\OneDrive\Desktop\Travel\bharat-culture-tourism-analytics\assets\logo.png)
 
 ## Features
 

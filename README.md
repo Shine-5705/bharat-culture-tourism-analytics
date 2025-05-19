@@ -2,7 +2,7 @@
 
 An interactive Streamlit dashboard showcasing India's rich cultural heritage, traditional art forms, and tourism landscape. This data-driven platform helps promote responsible tourism while preserving cultural treasures across India.
 
-![Dashboard Preview](C:\Users\gupta\OneDrive\Desktop\Travel\bharat-culture-tourism-analytics\assets\logo.png)
+![Dashboard Preview](https://github.com/Shine-5705/bharat-culture-tourism-analytics/blob/main/assets/logo.png)
 
 ## Features
 

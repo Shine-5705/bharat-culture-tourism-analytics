@@ -1,0 +1,148 @@
+/* Main styling */
+@import url('https://fonts.googleapis.com/css2?family=Lora:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap');
+
+/* Header and title styling */
+h1, h2, h3, h4, h5, h6 {
+    font-family: 'Lora', serif;
+    color: #2d3748;
+}
+
+p, li, div {
+    font-family: 'Inter', sans-serif;
+}
+
+/* Dashboard container */
+.reportview-container {
+    background-color: #f8f9fa;
+}
+
+/* Card styling */
+.stMetric {
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    padding: 1rem;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.stMetric:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 6px rgba(0,0,0,0.15);
+}
+
+/* Art cards */
+.art-card {
+    background-color: white;
+    border-radius: 8px;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    border-left: 4px solid #e53e3e;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.art-card h3 {
+    margin-top: 0;
+    color: #2c5282;
+    font-size: 1.25rem;
+}
+
+/* Insight cards */
+.insight-card {
+    background-color: #ebf8ff;
+    border-radius: 8px;
+    padding: 1.5rem;
+    margin: 1rem 0;
+    border-left: 4px solid #3182ce;
+}
+
+.insight-card h3 {
+    margin-top: 0;
+    color: #2c5282;
+}
+
+/* Download buttons */
+.download-button {
+    display: inline-block;
+    background-color: #4299e1;
+    color: white !important;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    text-decoration: none;
+    margin-top: 1rem;
+    font-weight: 500;
+    transition: background-color 0.2s ease;
+}
+
+.download-button:hover {
+    background-color: #3182ce;
+    text-decoration: none;
+}
+
+/* Footer styling */
+.footer {
+    text-align: center;
+    color: #718096;
+    font-size: 0.875rem;
+    padding: 1rem 0;
+}
+
+/* Tab styling */
+.stTabs [data-baseweb="tab-list"] {
+    gap: 1rem;
+}
+
+.stTabs [data-baseweb="tab"] {
+    height: 3rem;
+    white-space: pre-wrap;
+    background-color: white;
+    border-radius: 4px 4px 0 0;
+}
+
+.stTabs [aria-selected="true"] {
+    background-color: #edf2f7;
+    border-bottom: 2px solid #3182ce;
+}
+
+/* Expander styling */
+.streamlit-expanderHeader {
+    font-weight: 600;
+    color: #2c5282;
+}
+
+/* Dataframe styling */
+.dataframe-container .dataframe {
+    border-collapse: collapse;
+    width: 100%;
+    border: 1px solid #e2e8f0;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.dataframe-container .dataframe th {
+    background-color: #edf2f7;
+    color: #4a5568;
+    text-align: left;
+    padding: 0.75rem;
+    font-weight: 600;
+}
+
+.dataframe-container .dataframe td {
+    padding: 0.75rem;
+    border-top: 1px solid #e2e8f0;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .art-card {
+        padding: 0.75rem;
+    }
+    
+    .insight-card {
+        padding: 1rem;
+    }
+    
+    .download-button {
+        width: 100%;
+        text-align: center;
+    }
+}

@@ -1,6 +1,44 @@
 import pandas as pd
 import numpy as np
 import os
+import snowflake.connector
+
+def get_heritage_sites_data():
+    """Get heritage sites data from Snowflake"""
+    try:
+        conn = snowflake.connector.connect(
+            user='YUGAMWADHWA',
+            password='Snowflakeproject1',
+            account='avoweut-wp22365',
+            warehouse='COMPUTE_WH',
+            database='CULTURE_TOURISM_DB',
+            schema='PUBLIC'
+        )
+        
+        cursor = conn.cursor()
+        cursor.execute("SELECT * FROM HERITAGE_SITES")
+        
+        # Fetch column names
+        columns = [desc[0] for desc in cursor.description]
+        
+        # Fetch all data
+        data = cursor.fetchall()
+        
+        # Create DataFrame
+        heritage_df = pd.DataFrame(data, columns=columns)
+        
+        cursor.close()
+        conn.close()
+        
+        return heritage_df
+    except Exception as e:
+        print(f"Error connecting to Snowflake: {e}")
+        # Return empty DataFrame if connection fails
+        return pd.DataFrame(columns=[
+            'CITY_NAME', 'STATE', 'COUNTRY', 'ZONE_NAME', 
+            'NAME_OF_HERITAGE', 'NATURE_OF_HERITAGE', 
+            'HERITAGE_USE', 'AGE_OF_HERITAGE'
+        ])
 
 def generate_tourism_data():
     """Generate synthetic tourism data for India states"""
@@ -82,117 +120,54 @@ def generate_tourism_data():
 
 def generate_art_forms_data():
     """Generate synthetic art forms data for India"""
-    # List of states
-    states = [
-        'Andhra Pradesh', 'Arunachal Pradesh', 'Assam', 'Bihar', 'Chhattisgarh',
-        'Goa', 'Gujarat', 'Haryana', 'Himachal Pradesh', 'Jharkhand',
-        'Karnataka', 'Kerala', 'Madhya Pradesh', 'Maharashtra', 'Manipur',
-        'Meghalaya', 'Mizoram', 'Nagaland', 'Odisha', 'Punjab',
-        'Rajasthan', 'Sikkim', 'Tamil Nadu', 'Telangana', 'Tripura',
-        'Uttar Pradesh', 'Uttarakhand', 'West Bengal', 'Delhi', 'Jammu and Kashmir'
+    # List of art forms with their details
+    art_forms_data = [
+        # Classical Dance Forms
+        ('Bharatanatyam', 'Dance', 'Tamil Nadu', 9.2, 'Ancient classical dance from Tamil Nadu, known for its grace and sculptural poses'),
+        ('Kathakali', 'Dance', 'Kerala', 8.8, 'Traditional dance-drama known for elaborate costumes and facial expressions'),
+        ('Odissi', 'Dance', 'Odisha', 8.9, 'One of the oldest surviving dance forms of India'),
+        ('Kathak', 'Dance', 'Uttar Pradesh', 9.0, 'Classical dance form that tells stories through rhythmic foot movements'),
+        ('Manipuri', 'Dance', 'Manipur', 8.5, 'Classical dance from Manipur characterized by gentle and graceful movements'),
+        
+        # Music Traditions
+        ('Carnatic', 'Music', 'Tamil Nadu', 9.0, 'Classical music tradition of South India'),
+        ('Hindustani', 'Music', 'Uttar Pradesh', 9.1, 'Classical music tradition of North India'),
+        ('Dhrupad', 'Music', 'Bihar', 8.7, 'Ancient classical music form of North India'),
+        ('Qawwali', 'Music', 'Delhi', 8.6, 'Devotional music of the Sufis'),
+        
+        # Visual Arts
+        ('Madhubani', 'Painting', 'Bihar', 8.5, 'Folk art from the Mithila region using natural dyes'),
+        ('Tanjore', 'Painting', 'Tamil Nadu', 8.6, 'Classical South Indian painting style using gold foil'),
+        ('Warli', 'Painting', 'Maharashtra', 8.4, 'Tribal art form using basic geometric shapes'),
+        ('Gond', 'Painting', 'Madhya Pradesh', 8.3, 'Traditional art of the Gond tribe'),
+        ('Kalamkari', 'Painting', 'Andhra Pradesh', 8.7, 'Hand-painted or block-printed cotton textile'),
+        
+        # Performing Arts
+        ('Yakshagana', 'Theatre', 'Karnataka', 8.2, 'Traditional theatre form combining dance, music, and dialogue'),
+        ('Chhau', 'Dance', 'West Bengal', 8.4, 'Semi-classical dance with martial art movements'),
+        ('Koodiyattam', 'Theatre', 'Kerala', 8.1, 'Sanskrit theatre tradition'),
+        ('Nautanki', 'Theatre', 'Uttar Pradesh', 7.9, 'Folk theatre performance'),
+        
+        # Crafts
+        ('Bidri', 'Craft', 'Karnataka', 8.3, 'Metal handicraft with silver inlay work'),
+        ('Pashmina', 'Craft', 'Jammu and Kashmir', 8.8, 'Fine cashmere wool textile'),
+        ('Zardozi', 'Craft', 'Uttar Pradesh', 8.5, 'Metallic thread embroidery'),
+        ('Phulkari', 'Craft', 'Punjab', 8.4, 'Traditional embroidery technique'),
+        
+        # Additional art forms for more states
+        ('Bamboo Craft', 'Craft', 'Assam', 8.0, 'Traditional bamboo crafting'),
+        ('Thangka', 'Painting', 'Sikkim', 8.2, 'Buddhist scroll painting'),
+        ('Dokra', 'Craft', 'Chhattisgarh', 8.1, 'Non-ferrous metal casting using lost-wax technique'),
+        ('Pattachitra', 'Painting', 'Odisha', 8.6, 'Traditional cloth-based scroll painting'),
+        ('Puppetry', 'Theatre', 'Rajasthan', 7.8, 'Traditional string puppet theatre'),
+        ('Roghan', 'Painting', 'Gujarat', 8.2, 'Traditional cloth painting using castor oil paste'),
+        ('Tholu Bommalata', 'Theatre', 'Andhra Pradesh', 7.9, 'Traditional leather puppet theatre')
     ]
-    
-    # List of art forms with their type and state
-    art_forms = [
-        {'art_form': 'Bharatanatyam', 'type': 'Dance', 'state': 'Tamil Nadu', 
-         'description': 'A classical dance form known for its grace, purity, and sculpturesque poses.'},
-        {'art_form': 'Kathakali', 'type': 'Dance Drama', 'state': 'Kerala',
-         'description': 'A stylized classical dance-drama noted for its elaborate costumes and makeup.'},
-        {'art_form': 'Madhubani', 'type': 'Painting', 'state': 'Bihar',
-         'description': 'A distinctive style of folk painting with geometric patterns and nature motifs.'},
-        {'art_form': 'Warli', 'type': 'Painting', 'state': 'Maharashtra',
-         'description': 'A tribal art form using basic geometric shapes and white pigment.'},
-        {'art_form': 'Gond', 'type': 'Painting', 'state': 'Madhya Pradesh',
-         'description': 'A form of painting from central India, reflecting the belief that viewing good images begets good luck.'},
-        {'art_form': 'Kathak', 'type': 'Dance', 'state': 'Uttar Pradesh',
-         'description': 'A classical dance form that tells stories through rhythmic foot movements and expressive gestures.'},
-        {'art_form': 'Odissi', 'type': 'Dance', 'state': 'Odisha',
-         'description': 'One of the oldest surviving dance forms in India with a strong foundation in Natya Shastra.'},
-        {'art_form': 'Manipuri', 'type': 'Dance', 'state': 'Manipur',
-         'description': 'A graceful dance form characterized by gentle movements and swaying.'},
-        {'art_form': 'Kuchipudi', 'type': 'Dance', 'state': 'Andhra Pradesh',
-         'description': 'A dance-drama performance with roots in ancient Hindu Sanskrit text of Natya Shastra.'},
-        {'art_form': 'Sattriya', 'type': 'Dance', 'state': 'Assam',
-         'description': 'A dance form that tells mythological stories, traditionally performed in monasteries.'},
-        {'art_form': 'Phad', 'type': 'Painting', 'state': 'Rajasthan',
-         'description': 'A style of scroll painting depicting folk epics and legends.'},
-        {'art_form': 'Pattachitra', 'type': 'Painting', 'state': 'Odisha',
-         'description': 'A cloth-based scroll painting with rich colorful application, creative motifs, and designs.'},
-        {'art_form': 'Tanjore', 'type': 'Painting', 'state': 'Tamil Nadu',
-         'description': 'A classical South Indian painting style characterized by rich, flat colors and gold foil.'},
-        {'art_form': 'Kalamkari', 'type': 'Textile Art', 'state': 'Andhra Pradesh',
-         'description': 'An ancient style of hand painting on cotton or silk fabric using natural dyes.'},
-        {'art_form': 'Bandhani', 'type': 'Textile Art', 'state': 'Gujarat',
-         'description': 'A tie and dye textile decorated with dots, waves, and stripes.'},
-        {'art_form': 'Chikankari', 'type': 'Embroidery', 'state': 'Uttar Pradesh',
-         'description': 'A traditional embroidery style known for its subtlety and grace.'},
-        {'art_form': 'Pashmina', 'type': 'Textile Art', 'state': 'Jammu and Kashmir',
-         'description': 'Fine cashmere wool textiles known for their softness, warmth, and lightweight quality.'},
-        {'art_form': 'Meenakari', 'type': 'Jewelry', 'state': 'Rajasthan',
-         'description': 'The art of coloring and ornamenting the surface of metals by fusing brilliant colors.'},
-        {'art_form': 'Bidri', 'type': 'Metalwork', 'state': 'Karnataka',
-         'description': 'A metal handicraft from Bidar known for its striking inlay artwork.'},
-        {'art_form': 'Blue Pottery', 'type': 'Pottery', 'state': 'Rajasthan',
-         'description': 'A Turko-Persian art form with Jaipur as its center, known for its vibrant blue dye.'},
-        {'art_form': 'Chhau', 'type': 'Dance', 'state': 'West Bengal',
-         'description': 'A semi-classical dance with martial, tribal, and folk traditions.'},
-        {'art_form': 'Yakshagana', 'type': 'Theater', 'state': 'Karnataka',
-         'description': 'A traditional theater form combining dance, music, dialogue, and costumes.'},
-        {'art_form': 'Nautanki', 'type': 'Theater', 'state': 'Uttar Pradesh',
-         'description': 'A popular folk operatic theater performance with elements of fantasy, romance, and social issues.'},
-        {'art_form': 'Lavani', 'type': 'Dance', 'state': 'Maharashtra',
-         'description': 'A traditional dance form combining song and dance, performed to the beats of a dholki.'},
-        {'art_form': 'Ghoomar', 'type': 'Dance', 'state': 'Rajasthan',
-         'description': 'A traditional folk dance performed by women in swirling robes.'},
-        {'art_form': 'Bhangra', 'type': 'Dance', 'state': 'Punjab',
-         'description': 'An energetic folk dance celebrating the harvest season.'},
-        {'art_form': 'Thangka', 'type': 'Painting', 'state': 'Sikkim',
-         'description': 'A Tibetan Buddhist painting on cotton or silk, usually depicting Buddhist deities.'},
-        {'art_form': 'Rogan', 'type': 'Textile Art', 'state': 'Gujarat',
-         'description': 'An art of cloth painting using a castor oil-based paint and stylus for drawing.'},
-        {'art_form': 'Terracotta', 'type': 'Pottery', 'state': 'West Bengal',
-         'description': 'Clay-based craft used for making sculptures and decorative items.'},
-        {'art_form': 'Dokra', 'type': 'Metalwork', 'state': 'Chhattisgarh',
-         'description': 'An ancient lost-wax casting technique for making brass artifacts.'}
-    ]
-    
-    # Create data list
-    data = []
-    
-    # Add each art form with a popularity score
-    for art in art_forms:
-        popularity = np.random.randint(6, 11)  # Popularity score from 6 to 10
-        data.append({
-            'art_form': art['art_form'],
-            'type': art['type'],
-            'state': art['state'],
-            'popularity': popularity,
-            'description': art['description']
-        })
-    
-    # Generate more art forms for the remaining states
-    art_types = ['Dance', 'Painting', 'Textile Art', 'Sculpture', 'Music', 'Theater', 'Pottery', 'Metalwork', 'Embroidery']
-    
-    for state in states:
-        if state not in [art['state'] for art in art_forms]:
-            # Add 1-3 art forms for states without any
-            for _ in range(np.random.randint(1, 4)):
-                art_type = np.random.choice(art_types)
-                art_form = f"{state} {art_type}"
-                popularity = np.random.randint(4, 9)  # Slightly lower popularity
-                
-                data.append({
-                    'art_form': art_form,
-                    'type': art_type,
-                    'state': state,
-                    'popularity': popularity,
-                    'description': f"A traditional {art_type.lower()} form from {state}."
-                })
     
     # Create DataFrame
-    art_forms_df = pd.DataFrame(data)
+    df = pd.DataFrame(art_forms_data, columns=['art_form', 'type', 'state', 'popularity', 'description'])
     
-    return art_forms_df
+    return df
 
 def generate_funding_data():
     """Generate synthetic funding data for cultural preservation"""
@@ -463,6 +438,7 @@ def save_data_to_csv():
     funding_data = generate_funding_data()
     monthly_data = generate_monthly_data()
     regional_data = generate_regional_data()
+    heritage_data = get_heritage_sites_data()
     
     # Save to CSV
     tourism_data.to_csv('data/csv/tourism_data.csv', index=False)
@@ -470,43 +446,24 @@ def save_data_to_csv():
     funding_data.to_csv('data/csv/funding_data.csv', index=False)
     monthly_data.to_csv('data/csv/monthly_data.csv', index=False)
     regional_data.to_csv('data/csv/regional_data.csv', index=False)
+    heritage_data.to_csv('data/csv/heritage_data.csv', index=False)
 
 def load_all_data():
     """Load all datasets"""
     # Check if data directory exists, if not create it
     os.makedirs('data/csv', exist_ok=True)
     
-    # Check if CSV files exist, if not generate them
-    if not (os.path.exists('data/csv/tourism_data.csv') and
-            os.path.exists('data/csv/art_forms_data.csv') and
-            os.path.exists('data/csv/funding_data.csv') and
-            os.path.exists('data/csv/monthly_data.csv') and
-            os.path.exists('data/csv/regional_data.csv')):
-        save_data_to_csv()
+    # Get heritage sites data from Snowflake
+    heritage_data = get_heritage_sites_data()
     
-    # Load datasets
-    try:
-        tourism_data = pd.read_csv('data/csv/tourism_data.csv')
-        art_forms_data = pd.read_csv('data/csv/art_forms_data.csv')
-        funding_data = pd.read_csv('data/csv/funding_data.csv')
-        monthly_data = pd.read_csv('data/csv/monthly_data.csv')
-        regional_data = pd.read_csv('data/csv/regional_data.csv')
-    except:
-        # If loading fails, generate new data
-        tourism_data = generate_tourism_data()
-        art_forms_data = generate_art_forms_data()
-        funding_data = generate_funding_data()
-        monthly_data = generate_monthly_data()
-        regional_data = generate_regional_data()
-        
-        # Save the generated data
-        tourism_data.to_csv('data/csv/tourism_data.csv', index=False)
-        art_forms_data.to_csv('data/csv/art_forms_data.csv', index=False)
-        funding_data.to_csv('data/csv/funding_data.csv', index=False)
-        monthly_data.to_csv('data/csv/monthly_data.csv', index=False)
-        regional_data.to_csv('data/csv/regional_data.csv', index=False)
+    # Load or generate other datasets
+    tourism_data = generate_tourism_data()
+    art_forms_data = generate_art_forms_data()
+    funding_data = generate_funding_data()
+    monthly_data = generate_monthly_data()
+    regional_data = generate_regional_data()
     
-    return tourism_data, art_forms_data, funding_data, monthly_data, regional_data
+    return tourism_data, art_forms_data, funding_data, monthly_data, regional_data, heritage_data
 
 # If run directly, generate and save datasets
 if __name__ == "__main__":

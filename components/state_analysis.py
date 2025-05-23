@@ -7,6 +7,11 @@ def render_state_analysis(tourism_data, art_forms_data, funding_data, monthly_da
     """Render the state-wise cultural tourism analysis section"""
     st.header("🏞️ State-wise Cultural Tourism Analysis")
     
+    # Ensure art_forms_data is not None and has required columns
+    if art_forms_data is None or art_forms_data.empty:
+        st.error("Art forms data is not available. Please check the data source.")
+        return
+    
     # State selector
     selected_state = st.selectbox(
         "Select a state to explore its art forms and funding",

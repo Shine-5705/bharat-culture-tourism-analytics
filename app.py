@@ -9,6 +9,7 @@ from components.art_showcase import render_art_showcase
 from components.seasonal_patterns import render_seasonal_patterns
 from components.advanced_analytics import render_advanced_analytics
 from components.data_export import render_data_export
+from components.heritage_sites import render_heritage_sites
 from data.loader import load_all_data
 
 # Page configuration
@@ -24,7 +25,7 @@ with open("assets/styles.css") as f:
     st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
 
 # Load all data
-tourism_data, art_forms_data, funding_data, monthly_data, regional_data = load_all_data()
+tourism_data, art_forms_data, funding_data, monthly_data, regional_data, heritage_data = load_all_data()
 
 # Create session state for filters if it doesn't exist
 if 'selected_state' not in st.session_state:
@@ -38,12 +39,13 @@ if 'selected_region' not in st.session_state:
 render_sidebar()
 
 # Header section
-render_header(tourism_data)
+render_header(tourism_data, heritage_data)
 
 # Main content tabs
-tab1, tab2, tab3, tab4, tab5 = st.tabs([
+tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs([
     "🗺️ Tourism Overview", 
-    "🎭 Art & Culture", 
+    "🎭 Art & Culture",
+    "🏛️ Heritage Sites",
     "🌦️ Seasonal Patterns", 
     "🔍 Advanced Analytics",
     "📊 Data Export"
@@ -65,17 +67,20 @@ with tab2:
     render_art_showcase(art_forms_data, funding_data)
 
 with tab3:
-    render_seasonal_patterns(monthly_data, regional_data)
+    render_heritage_sites(heritage_data)
 
 with tab4:
-    render_advanced_analytics(tourism_data, funding_data, monthly_data)
+    render_seasonal_patterns(monthly_data, regional_data)
 
 with tab5:
-    render_data_export(tourism_data, art_forms_data, funding_data, monthly_data)
+    render_advanced_analytics(tourism_data, funding_data, monthly_data)
+
+with tab6:
+    render_data_export(tourism_data, art_forms_data, funding_data, monthly_data, heritage_data)
 
 # Footer
 st.markdown("---")
 st.markdown(
-    "<div class='footer'>© 2025 India Art, Culture & Tourism Dashboard | Data sourced from Ministry of Tourism and Ministry of Culture</div>", 
+    "<div class='footer'>© 2025 India Art, Culture & Tourism Dashboard | Data sourced from Ministry of Tourism, Ministry of Culture, and Snowflake Database</div>", 
     unsafe_allow_html=True
 )

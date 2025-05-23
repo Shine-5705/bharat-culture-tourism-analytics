@@ -1,7 +1,7 @@
 import streamlit as st
 import pandas as pd
 
-def render_header(tourism_data):
+def render_header(tourism_data, heritage_data):
     """Render the header section with key metrics"""
     st.title("🏮 Art, Culture & Tourism in India")
     
@@ -10,9 +10,10 @@ def render_header(tourism_data):
     total_states = tourism_data['state'].nunique()
     total_art_forms = 75  # Predefined value
     total_funding = 5  # In crores, predefined value
+    total_heritage_sites = len(heritage_data)
     
     # Create metrics row
-    col1, col2, col3, col4 = st.columns(4)
+    col1, col2, col3, col4, col5 = st.columns(5)
     
     with col1:
         st.metric(
@@ -38,6 +39,12 @@ def render_header(tourism_data):
             label="Total Funding",
             value=f"₹{total_funding} Cr"
         )
+        
+    with col5:
+        st.metric(
+            label="Heritage Sites",
+            value=f"{total_heritage_sites}"
+        )
     
     # Info box about the dashboard
     with st.expander("About This Dashboard"):
@@ -52,8 +59,9 @@ def render_header(tourism_data):
             - Art form popularity and distribution
             - Seasonal tourism patterns
             - Correlation between tourism and cultural funding
+            - Heritage sites mapping and analysis
             
             The data is synthesized from various government sources including the Ministry of 
-            Tourism and the Ministry of Culture.
+            Tourism and the Ministry of Culture, with heritage site data from the Archaeological Survey of India.
             """
         )

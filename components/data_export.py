@@ -2,7 +2,7 @@ import streamlit as st
 import pandas as pd
 import base64
 
-def render_data_export(tourism_data, art_forms_data, funding_data, monthly_data):
+def render_data_export(tourism_data, art_forms_data, funding_data, monthly_data, heritage_data):
     """Render the data export section"""
     st.header("📊 Data Export")
     
@@ -12,11 +12,12 @@ def render_data_export(tourism_data, art_forms_data, funding_data, monthly_data)
     )
     
     # Create tabs for different datasets
-    export_tab1, export_tab2, export_tab3, export_tab4 = st.tabs([
+    export_tab1, export_tab2, export_tab3, export_tab4, export_tab5 = st.tabs([
         "Tourism Data", 
         "Art Forms Data", 
         "Funding Data", 
-        "Monthly Tourism Data"
+        "Monthly Tourism Data",
+        "Heritage Sites Data"
     ])
     
     with export_tab1:
@@ -55,6 +56,15 @@ def render_data_export(tourism_data, art_forms_data, funding_data, monthly_data)
         href = f'<a href="data:file/csv;base64,{b64}" download="monthly_tourism_data.csv" class="download-button">Download Monthly Tourism Data</a>'
         st.markdown(href, unsafe_allow_html=True)
     
+    with export_tab5:
+        st.subheader("Heritage Sites Data")
+        st.dataframe(heritage_data)
+        
+        csv = heritage_data.to_csv(index=False)
+        b64 = base64.b64encode(csv.encode()).decode()
+        href = f'<a href="data:file/csv;base64,{b64}" download="heritage_sites_data.csv" class="download-button">Download Heritage Sites Data</a>'
+        st.markdown(href, unsafe_allow_html=True)
+    
     # Combined dataset
     st.subheader("Combined Dataset")
     
@@ -72,10 +82,17 @@ def render_data_export(tourism_data, art_forms_data, funding_data, monthly_data)
         tourism_data,
         pd.merge(
             art_forms_data.groupby('state')['art_form'].count().reset_index().rename(columns={'art_form': 'art_forms_count'}),
-            funding_data.groupby('state')['funding_amount'].sum().reset_index(),
-            on='state'
+            pd.merge(
+                funding_data.groupby('state')['funding_amount'].sum().reset_index(),
+                heritage_data.groupby('STATE').size().reset_index().rename(columns={0: 'heritage_sites_count', 'STATE': 'state'}),
+                on='state',
+                how='outer'
+            ),
+            on='state',
+            how='outer'
         ),
-        on='state'
+        on='state',
+        how='outer'
     ).head(10))
     
     # Create combined dataset
@@ -83,10 +100,17 @@ def render_data_export(tourism_data, art_forms_data, funding_data, monthly_data)
         tourism_data,
         pd.merge(
             art_forms_data.groupby('state')['art_form'].count().reset_index().rename(columns={'art_form': 'art_forms_count'}),
-            funding_data.groupby('state')['funding_amount'].sum().reset_index(),
-            on='state'
+            pd.merge(
+                funding_data.groupby('state')['funding_amount'].sum().reset_index(),
+                heritage_data.groupby('STATE').size().reset_index().rename(columns={0: 'heritage_sites_count', 'STATE': 'state'}),
+                on='state',
+                how='outer'
+            ),
+            on='state',
+            how='outer'
         ),
-        on='state'
+        on='state',
+        how='outer'
     )
     
     csv = combined_data.to_csv(index=False)

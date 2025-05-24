@@ -14,7 +14,7 @@ from data.loader import load_all_data
 
 # Page configuration
 st.set_page_config(
-    page_title="India Art, Culture & Tourism Dashboard",
+    page_title="Tour In India",
     page_icon="🏮",
     layout="wide",
     initial_sidebar_state="expanded"

@@ -14,7 +14,7 @@ from data.loader import load_all_data
 
 # Page configuration
 st.set_page_config(
-    page_title="India Art, Culture & Tourism Dashboard",
+    page_title="Tour In India",
     page_icon="🏮",
     layout="wide",
     initial_sidebar_state="expanded"
@@ -43,11 +43,11 @@ render_header(tourism_data, heritage_data)
 
 # Main content tabs
 tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs([
-    "🗺️ Tourism Overview", 
+    "🗺️ Overview", 
     "🎭 Art & Culture",
     "🏛️ Heritage Sites",
-    "🌦️ Seasonal Patterns", 
-    "🔍 Advanced Analytics",
+    "🌦️ Seasonality & Trends", 
+    "🔍 Sanctions v/s Visitors",
     "📊 Data Export"
 ])
 
